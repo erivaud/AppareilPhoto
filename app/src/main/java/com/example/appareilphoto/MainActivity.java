@@ -1,11 +1,13 @@
 package com.example.appareilphoto;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,14 +27,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Button btnPrendrePhoto;
+    private Button btnEnreg;
     private ImageView imgAffichePhoto;
     private String photoPath = null;
+    private Bitmap image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initActivity();
+
+        ActivityCompat.requestPermissions(
+                MainActivity.this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                1);
+
     }
 
     /**
@@ -42,8 +52,26 @@ public class MainActivity extends AppCompatActivity {
 
         btnPrendrePhoto = (Button)findViewById(R.id.btnPrendrePhoto);
         imgAffichePhoto = (ImageView)findViewById(R.id.imgAffichePhoto);
+        btnEnreg = (Button)findViewById(R.id.btnEnreg);
 
         createClickBtnPrendrePhoto();
+        createOnClickBtnEnreg();
+    }
+
+    /**
+     * évènement click sur bouton btnEnreg
+     */
+    private void createOnClickBtnEnreg(){
+        btnEnreg.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Enregistrer la photo
+                MediaStore.Images.Media.insertImage(getContentResolver(),
+                        image,
+                        "nom_image", "description");
+            }
+        });
+
     }
 
     /**
@@ -104,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // vérifie que le bon code retour et l'état du retour OK
         if(requestCode == RETOUR_PRENDRE_PHOTO && resultCode == RESULT_OK){
-            Bitmap image = BitmapFactory.decodeFile(photoPath);
+            image = BitmapFactory.decodeFile(photoPath);
             // afficher image
             imgAffichePhoto.setImageBitmap(image);
         }

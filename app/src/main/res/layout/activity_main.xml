@@ -17,6 +17,12 @@
             android:layout_height="wrap_content"
             android:text="Prendre une Photo" />
 
+        <Button
+            android:id="@+id/btnEnreg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enregistrer photo" />
+
         <ImageView
             android:id="@+id/imgAffichePhoto"
             android:layout_width="match_parent"
